@@ -9,9 +9,9 @@
 <script src="{{ asset('assets/js/theme/feather.min.js') }}"></script>
 
 <!-- solar icons -->
-<script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+<script src="{{ asset('assets/js/iconify-icon.min.js') }}"></script>
 <script src="{{ asset('assets/libs/jvectormap/jquery-jvectormap.min.js') }}"></script>
-<script src="{{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+{{--<script src="{{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>--}}
 <script src="{{ asset('assets/js/extra-libs/jvectormap/jquery-jvectormap-us-aea-en.js') }}"></script>
 <script src="{{ asset('assets/js/dashboards/dashboard.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>

@@ -19,6 +19,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Gambar</th>
                                     <th>Nama Mobil</th>
                                     <th>No. Polisi</th>
                                     <th>Status</th>
@@ -27,16 +28,20 @@
                             </thead>
                             <tbody>
                                 @foreach ($kendaraans as $kendaraan)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $kendaraan->nama_mobil }}</td>
-                                        <td>{{ $kendaraan->nopol }}</td>
-                                        <td>{{ $kendaraan->status }}</td>
-                                        <td>
-                                            {{-- Tombol Edit --}}
-                                            <a href="{{ route('kendaraan.edit', $kendaraan->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td><img class="img-thumbnail" 
+                                        src="@if($kendaraan->image){{ asset('storage/'.$kendaraan->image) }}@else{{ asset('assets/images/placeholder.jpg') }}@endif" 
+                                        alt="Gambar Kendaraan {{ $kendaraan->nama_mobil }}">
+                                    </td>
+                                    <td>{{ $kendaraan->nama_mobil }}</td>
+                                    <td>{{ $kendaraan->nopol }}</td>
+                                    <td>{{ $kendaraan->status }}</td>
+                                    <td>
+                                        {{-- Tombol Edit --}}
+                                        <a href="{{ route('kendaraan.edit', $kendaraan->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    </td>
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>

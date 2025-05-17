@@ -14,13 +14,13 @@ use App\Http\Controllers\KendaraanController;
 Route::get('/', [KendaraanController::class, 'dashboard'])->name('dashboard');
 
 // Menampilkan daftar kendaraan
-Route::get('/kendaraan', [KendaraanController::class, 'index'])->name('kendaraan.index');
+Route::get('/kendaraan/list', [KendaraanController::class, 'index'])->name('kendaraan.index');
 
 // Menampilkan form tambah kendaraan
-Route::get('/kendaraan/create', [KendaraanController::class, 'create']);
+Route::get('/kendaraan/create', [KendaraanController::class, 'create'])->name('kendaraan.create');
 
 // Menyimpan data dari form
-Route::post('/kendaraan', [KendaraanController::class, 'store']);
+Route::post('/kendaraan', [KendaraanController::class, 'store'])->name('kendaraan.store');
 
 // Tampilkan form edit kendaraan
 Route::get('/kendaraan/{id}/edit', [KendaraanController::class, 'edit'])->name('kendaraan.edit');

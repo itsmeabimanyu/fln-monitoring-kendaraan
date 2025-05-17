@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class KendaraanController extends Controller
 {
@@ -30,18 +33,32 @@ class KendaraanController extends Controller
             'nama_mobil' => 'required', // wajib diisi
             'nopol' => 'required',      // wajib diisi
             'status' => 'required|in:standby,pergi,perbaikan', // hanya boleh salah satu dari tiga nilai ini
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = 'kendaraan_' . time() . '.jpg';
+        
+            $manager = new ImageManager(new Driver()); // Gunakan GD atau Imagick
+            $processedImage = $manager->read($image->getPathname())
+                ->cover(800, 600) // Crop ke rasio 4:3 (800x600)
+                ->toJpeg(80); // Simpan ke JPEG dengan kualitas 80%
+        
+            Storage::disk('public')->put('kendaraan/' . $filename, $processedImage);
+        
+            $validated['image'] = 'kendaraan/' . $filename;
+        }
 
         // Simpan data kendaraan ke database menggunakan mass assignment
         Kendaraan::create($validated);
 
         // Redirect ke halaman daftar kendaraan + kirim pesan sukses
-        return redirect('/kendaraan')->with('success', 'Kendaraan berhasil ditambahkan!');
+        return redirect('/kendaraan/list')->with('success', 'Kendaraan berhasil ditambahkan!');
 
         // Redirect kembali ke halaman create dengan pesan sukses
         // return redirect()->back()->with('success', 'Kendaraan berhasil ditambahkan!');
     }
-
 
     // Menampilkan daftar seluruh kendaraan
     public function index()
@@ -71,14 +88,36 @@ class KendaraanController extends Controller
             'nama_mobil' => 'required',
             'nopol' => 'required',
             'status' => 'required|in:standby,pergi,perbaikan',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Cari kendaraan dan update datanya
         $kendaraan = Kendaraan::findOrFail($id);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            if ($kendaraan->image) {
+                Storage::disk('public')->delete($kendaraan->image);
+            }
+    
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($request->file('image')->getPathname());
+    
+            // Crop dan resize ke 4:3, ukuran 800x600
+            $image->cover(800, 600);
+    
+            $encoded = $image->toJpeg(80);
+            $filename = 'kendaraan_' . time() . '.jpg';
+    
+            Storage::disk('public')->put('kendaraan/' . $filename, $encoded);
+    
+            $validated['image'] = 'kendaraan/' . $filename;
+        }
+
         $kendaraan->update($validated);
 
         // Redirect ke list kendaraan dengan pesan sukses
-        return redirect('/kendaraan')->with('success', 'Kendaraan berhasil diperbarui!');
+        return redirect('/kendaraan/list')->with('success', 'Kendaraan berhasil diperbarui!');
         // return view('kendaraan.index')->with('success', 'Kendaraan berhasil diperbarui!');
     }
 
