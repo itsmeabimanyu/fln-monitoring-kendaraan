@@ -41,6 +41,14 @@
                         <span class="hide-menu ps-1">Kendaraan</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link sidebar-link primary-hover-bg" href="{{ route('supir.index') }}" aria-expanded="false">
+                        <span class="aside-icon p-2 bg-primary-subtle rounded-1">
+                            <i class="ti ti-steering-wheel fs-6"></i>
+                        </span>
+                        <span class="hide-menu ps-1">Driver</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     <!-- End Sidebar navigation -->

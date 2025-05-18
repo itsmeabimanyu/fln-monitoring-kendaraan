@@ -8,4 +8,9 @@ class Kendaraan extends Model
 {
     //
     protected $fillable = ['nama_mobil', 'nopol', 'status', 'image'];
+    
+    public function __toString()
+    {
+        return "{$this->nama_mobil} ({$this->nopol})";
+    }
 }

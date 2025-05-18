@@ -1,5 +1,5 @@
 
-@foreach ($kendaraans as $kendaraan)
+@foreach ($list_item as $kendaraan)
     <div class="col-md-3 mb-3">
         <div class="card h-100 d-flex flex-column">
             <img class="card-img-top img-responsive p-2" 
@@ -19,15 +19,15 @@
                 <h5 class="fw-bold fs-3">
                    {{ $kendaraan->nopol }}
                 </h5>
-                <p class="mb-0 mt-2 text-muted">
-                {{ $kendaraan->status }}
+                <p class="mb-0 mt-3 text-muted">
+                    {!! $kendaraan->new_status !!}
                 </p>
                 <div class="text-end">
-                <button class="btn btn-primary rounded-pill mt-3">
-                    Read more
+                <button class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal" data-bs-target="#samedata-modal-{{ $kendaraan->id }}">
+                    Action
                 </button>
                 </div>
             </div>
-            </div>
+        </div>
     </div>
 @endforeach

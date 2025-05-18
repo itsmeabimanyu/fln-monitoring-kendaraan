@@ -7,39 +7,62 @@
         <div class="mb-3">
             <h5 class="mb-0">{{ $title }}</h5>
         </div>
-        <form action="{{ route('kendaraan.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            
-            <div class="p-3">
-                <label for="nama_mobil" class="form-label">Nama Mobil</label>
-                <input type="text" class="form-control" name="nama_mobil" required>
-            </div>
-            
-            <div class="p-3">
-                <label for="nopol" class="form-label">Nomor Polisi</label>
-                <input type="text" class="form-control" name="nopol" required>
-            </div>
-            
-            <div class="p-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-control form-select w-50" name="status" required>
-                  <option value="standby">Standby</option>
-                  <option value="pergi">Pergi</option>
-                  <option value="perbaikan">Perbaikan</option>
-                </select>
-            </div>
 
-            <div class="p-3">
-                <label for="image" class="form-label">Gambar Kendaraan</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                @error('image')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-            
-            <div class="p-3">
-                <button type="submit" class="btn btn-primary">Simpan</button>
-            </div>
+        @if (isset($item))
+            @if($item->image)
+                <div class="mt-3 mb-3">
+                    <img src="{{ asset('storage/'.$item->image) }}" alt="Gambar Kendaraan" width="150" class="img-thumbnail">
+                </div>
+            @endif
+        @endif
+
+        <form action="{{ $action }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @if (isset($item))
+                @method('PUT')
+            @endif
+        
+            @foreach ($formFields as $field)
+                <div class="form-group mb-3">
+                    <label for="{{ $field['name'] }}" class="mb-2">{{ $field['label'] }}</label>
+        
+                    @if ($field['type'] === 'text')
+                        <input type="text" 
+                               name="{{ $field['name'] }}" 
+                               id="{{ $field['name'] }}" 
+                               value="{{ $field['value'] }}" 
+                               class="form-control">
+                    @elseif ($field['type'] === 'file')
+                        <input type="file" 
+                               name="{{ $field['name'] }}" 
+                               id="{{ $field['name'] }}" 
+                               class="form-control"
+                               @foreach ($field['attributes'] ?? [] as $attr => $val)
+                                    {{ $attr }}="{{ $val }}"
+                                @endforeach
+                            >
+                    @elseif ($field['type'] === 'textarea')
+                        <textarea name="{{ $field['name'] }}" 
+                                  id="{{ $field['name'] }}" 
+                                  class="form-control">{{ $field['value'] }}</textarea>
+                    @elseif ($field['type'] === 'select')
+                        <select name="{{ $field['name'] }}" id="{{ $field['name'] }}" class="form-control form-select">
+                            @foreach ($field['options'] as $optionValue => $optionLabel)
+                                <option value="{{ $optionValue }}" 
+                                    {{ $optionValue == $field['value'] ? 'selected' : '' }}>
+                                    {{ $optionLabel }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
+        
+                    @error($field['name'])
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+            @endforeach
+        
+            <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
     </div>
 </div>

@@ -10,7 +10,7 @@
         @include('kendaraan._card')
     </div>
 
-    <div id="messages"></div>
+    @include('kendaraan._modal_form')
 
     <script>
         // 2. Inisialisasi Laravel Echo
@@ -49,4 +49,26 @@
                 });
         });
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('.modal-body .form-group').not(':has(#status)').hide();
+
+        $('.form-select').on('change', function () {
+            const selectedValue = $(this).val();
+            if (selectedValue === 'pergi') {
+                $('.modal-body .form-group').show();
+                // Jadikan required semua input, textarea, dan select kecuali #status sendiri
+                $('.modal-body .form-group').not(':has(#status)').find('input, textarea').attr('required', true);
+            } else {
+                // Sembunyikan semua kecuali yang punya #status
+                $('.modal-body .form-group').not(':has(#status)').hide();
+                // Kosongkan nilai dan hilangkan required pada input, textarea, dan select di form-group yang disembunyikan
+                $('.modal-body .form-group').not(':has(#status)').find('input, textarea').val('').removeAttr('required');
+            }
+        });
+    });
+    </script>
+
 @endsection

@@ -2,7 +2,7 @@
 @section('page_title', 'Daftar Kendaraan')
 
 @section('content')
-    <a href="/kendaraan/create" class="btn btn-primary mb-3">Tambah Kendaraan</a>
+    {!! $additional_button !!}
     <div class="datatables">
         <!-- alternative pagination -->
         <div class="row">
@@ -19,36 +19,61 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Gambar</th>
-                                    <th>Nama Mobil</th>
-                                    <th>No. Polisi</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
+                                    @foreach ($fields as $key => $label)
+                                        <th>{{ $label }}</th>
+                                    @endforeach
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($kendaraans as $kendaraan)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td><img class="img-thumbnail" 
-                                        src="@if($kendaraan->image){{ asset('storage/'.$kendaraan->image) }}@else{{ asset('assets/images/placeholder.jpg') }}@endif" 
-                                        alt="Gambar Kendaraan {{ $kendaraan->nama_mobil }}">
-                                    </td>
-                                    <td>{{ $kendaraan->nama_mobil }}</td>
-                                    <td>{{ $kendaraan->nopol }}</td>
-                                    <td>{{ $kendaraan->status }}</td>
-                                    <td>
-                                        {{-- Tombol Edit --}}
-                                        <a href="{{ route('kendaraan.edit', $kendaraan->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    </td>
-                                </tr>
+                                @foreach ($list_item as $item)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        @foreach ($fields as $key => $label)
+                                        <td>{!! data_get($item, $key) !!}</td>
+                                        @endforeach
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
                 </div>
-            </div>
             <!-- end Alternative Pagination -->
             </div>
         </div>
     </div>
+
+    @foreach ($list_item as $item)
+        @foreach ($item->modals_form as $modal_title => $modal_data)
+        <!-- Modal Delete -->
+        <div id="delete-modal-{{ $item->id }}" class="modal fade" tabindex="-1" aria-labelledby="delete-modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <form action="{{ $modal_data['action_url'] }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+
+                        <div class="modal-header modal-colored-header bg-danger text-white">
+                            <h4 class="modal-title text-white" id="delete-modalLabel">
+                                {{ $modal_title }}
+                            </h4>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h5 class="mt-0">{{ $item }}</h5>
+                                {!! $modal_data['description'] !!}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">
+                                Tutup
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-danger ">
+                                Lanjutkan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    @endforeach
 @endsection
